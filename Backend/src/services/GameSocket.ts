@@ -4,13 +4,18 @@ import * as jwt from 'jsonwebtoken'
 import { Keys } from "../interfaces/Keys";
 import { OutputEvents } from "../interfaces/OutputEvents";
 import { ErrorHandlerSocketMiddleware } from "../middlewares/SocketMiddlewareError";
-import { AuthenticationMiddleware } from "../middlewares/AuthenticationMiddleware";
+import { Dumb } from '../models/Dumb'
+import { Inject } from "@tsed/di";
+import { MongooseModel } from "@tsed/mongoose";
+//import { AuthenticationMiddleware } from "../middlewares/AuthenticationMiddleware";
 
 @SocketService('/')
-@SocketUseBefore(AuthenticationMiddleware)
+//@SocketUseBefore(AuthenticationMiddleware)
 @SocketUseAfter(ErrorHandlerSocketMiddleware)
 export class GameSocket {
     private players: Map<string, Socket> = new Map<string, Socket>()
+    @Inject(Dumb)
+    private dumbModel: MongooseModel<Dumb>
 
     constructor(
         @IO
@@ -21,22 +26,41 @@ export class GameSocket {
         })
     }
 
-    @Input(InputEvents.SEND_MESSAGE)
-    @Emit(OutputEvents.SEND_SUCCESS)
-    sendMessage(
+    // TODO: fazer essa rota funcionar
+    @Input(InputEvents.SEND_LOGIN)
+    @Emit(OutputEvents.LOGIN_SUCCESS)
+    async login(
         @Args(0)
-        player: string,
+        username: string,
         @Args(1)
-        message: {
-            command: string,
-            data?: any
-        }
-    ): void {
-        if (this.players.has(player)) {
-            this.players.get(player).emit(OutputEvents.GAME_EVENT, message.command, {...message.data, timestamp: Date.now()})
-        }
+        password: string
+    ): Promise<string> {
+        // vazer os putete do banco para verificar login
+        return 'logou';
     }
 
+    @Input(InputEvents.SEND_MESSAGE)
+    @Emit(OutputEvents.SEND_SUCCESS)
+    async sendMessage(
+        @Args(0)
+        message: any
+    ): Promise<string> {
+        let dumb:Dumb = new Dumb();
+        dumb.name = "hello world";
+        await this.dumbModel.create(dumb);
+        return 'mensagem';
+    }
+
+    @Input(InputEvents.SEND_ATTACK)
+    @Emit(OutputEvents.SEND_SUCCESS)
+    sendAttack(
+        @Args(0)
+        message: any
+    ): string {
+
+        return 'atacou';
+    }
+    /*
     $onConnection(
         @Socket
         socket: SocketIO.Socket,
@@ -61,12 +85,10 @@ export class GameSocket {
         @SocketSession
         session: SocketSession
     ): void {
-        console.log('conectoooou')
-        console.log('player')
-        console.log(session.get('player'))
         if (session.has('player')) {
             const player = session.get('player')
             this.players.delete(player.id)
         }
     }
+    */
 }

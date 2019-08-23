@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
+const mongoose = require('mongoose');
 
 const rootDir = __dirname;
 
@@ -16,6 +17,16 @@ console.log(rootDir)
     socketIO: {
 
     },
+    
+    mongoose: {
+        url: process.env.MONGO_CONNECTION_URL,
+        connectionOptions: {
+            useNewUrlParser: true,
+            useCreateIndex: true,
+            useFindAndModify: false
+        }
+    },
+    
     componentsScan: [
         `${rootDir}/services/**/*.ts`,
         `${rootDir}/middlewares/**/*.ts`,
@@ -30,6 +41,7 @@ export class Server extends ServerLoader {
      * @returns {Server}
      */
     public async $onMountingMiddlewares(): Promise<any | void> {
+
         this
             .use(GlobalAcceptMimesMiddleware)
             .use(cookieParser())
@@ -37,7 +49,7 @@ export class Server extends ServerLoader {
             .use(methodOverride())
             .use(bodyParser.json())
             .use(bodyParser.urlencoded({
-                extended: true  
+                extended: true
             }))
 
         return null;
