@@ -11,7 +11,8 @@ console.log(rootDir)
 
 @ServerSettings({
     rootDir,
-    port: process.env.PORT,
+    //port: process.env.PORT,
+    port: 8000,
     httpsPort: false,
     acceptMimes: ["application/json"],
     socketIO: {
