@@ -17,12 +17,7 @@ export class User {
     @ObjectID()
     _id?: string
 
-    @VirtualRef({ justOne: true, foreignField: 'entity', localField: '_id', type: 'GameObject' })
-    gameObject: VirtualRef<GameObject & Document>
-
     @Property()
-    @Required()
-    @Unique()
     name: string
 
     @Property()
@@ -32,17 +27,14 @@ export class User {
 
     @Property()
     @Required()
-    @Unique()
     password: string
 
     @Property()
     @Required()
-    @Unique()
     firstName: string
 
     @Property()
     @Required()
-    @Unique()
     lastName: string
 }
 

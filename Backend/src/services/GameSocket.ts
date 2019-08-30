@@ -7,10 +7,11 @@ import { ErrorHandlerSocketMiddleware } from "../middlewares/SocketMiddlewareErr
 import { Dumb } from '../models/Dumb'
 import { Inject } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
-//import { AuthenticationMiddleware } from "../middlewares/AuthenticationMiddleware";
+import { AuthMiddleware } from "../middlewares/AuthenticationMiddleware";
+import { Authenticated } from "@tsed/common";
 
 @SocketService('/')
-//@SocketUseBefore(AuthenticationMiddleware)
+@SocketUseBefore(AuthMiddleware)
 @SocketUseAfter(ErrorHandlerSocketMiddleware)
 export class GameSocket {
     private players: Map<string, Socket> = new Map<string, Socket>()
@@ -24,19 +25,6 @@ export class GameSocket {
         io.on('error', (error: Error) => {
             console.error(error)
         })
-    }
-
-    // TODO: fazer essa rota funcionar
-    @Input(InputEvents.SEND_LOGIN)
-    @Emit(OutputEvents.LOGIN_SUCCESS)
-    async login(
-        @Args(0)
-        username: string,
-        @Args(1)
-        password: string
-    ): Promise<string> {
-        // vazer os putete do banco para verificar login
-        return 'logou';
     }
 
     @Input(InputEvents.SEND_MESSAGE)
@@ -53,14 +41,16 @@ export class GameSocket {
 
     @Input(InputEvents.SEND_ATTACK)
     @Emit(OutputEvents.SEND_SUCCESS)
+    @Authenticated()
     sendAttack(
         @Args(0)
         message: any
     ): string {
 
-        return 'atacou';
+        return 'awadwdawdadsada';
     }
-    /*
+    
+    @Authenticated()
     $onConnection(
         @Socket
         socket: SocketIO.Socket,
@@ -90,5 +80,4 @@ export class GameSocket {
             this.players.delete(player.id)
         }
     }
-    */
 }

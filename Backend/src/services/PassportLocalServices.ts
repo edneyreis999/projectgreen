@@ -12,8 +12,21 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
 
     constructor(private serverSettings: ServerSettingsService,
         @Inject(ExpressApplication) private expressApplication: ExpressApplication) {
+        Passport.serializeUser(PassportLocalService.serialize);
 
+        // used to deserialize the user
+        Passport.deserializeUser(this.deserialize.bind(this));
     }
+
+    static serialize(user, done) {
+        done(null, user._id);
+    }
+
+    public async deserialize(id, done) {
+        const user = await this.userModel.findById(id)
+        done(null, user);
+    }
+
 
     $beforeRoutesInit() {
         const options: any = this.serverSettings.get("passport") || {} as any;
@@ -47,7 +60,7 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
                         user.firstName = firstName;
                         user.lastName = lastName;
                         user.password = password;
-                        
+
                         this.signup(user)
                             .then((newUser) => done(null, newUser))
                             .catch((err) => done(err));
@@ -63,14 +76,15 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
      */
     async signup(user: User) {
 
-        const exists = await this.userModel.findOne({email: user.email})
+        const exists = await this.userModel.findOne({ email: user.email })
 
         if (exists) { //User exists
             throw new BadRequest("Email is already registered");
         }
 
         // Promise
-
+        console.log('----- user service -----')
+        console.log(user)
         // Create new User
         return await this.userModel.create(user);
     }
@@ -89,7 +103,9 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
     }
 
     async login(email: string, password: string): Promise<User> {
-        const user = await this.userModel.findOne({email: email, password: password})
+        const user = await this.userModel.findOne({ email: email, password: password })
+        console.log('----- user ----')
+        console.log(user)
         if (user) {
             return user;
         }

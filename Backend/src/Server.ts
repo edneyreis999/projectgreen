@@ -1,9 +1,11 @@
-import { ServerLoader, ServerSettings, GlobalAcceptMimesMiddleware } from "@tsed/common";
+import { ServerLoader, ServerSettings, GlobalAcceptMimesMiddleware, GlobalErrorHandlerMiddleware } from "@tsed/common";
+import '@tsed/swagger'
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
+const session = require("express-session");
 
 const rootDir = __dirname;
 
@@ -12,13 +14,34 @@ console.log(rootDir)
 @ServerSettings({
     rootDir,
     //port: process.env.PORT,
-    port: 8000,
     httpsPort: false,
     acceptMimes: ["application/json"],
-    socketIO: {
-
+    logger: {
+        logRequest: false
     },
-    
+    socketIO: {
+        
+    },
+    swagger: [
+        {
+            path: "/docs",
+            doc: "rest",
+            spec: {
+                securityDefinitions: {
+                    Bearer: {
+                        type: 'apiKey',
+                        name: 'x-auth-key-swagger',
+                        in: 'header'
+                    }
+                },
+                security: [
+                    {
+                        Bearer: []
+                    }
+                ]
+            }
+        }
+    ],
     mongoose: {
         url: process.env.MONGO_CONNECTION_URL,
         connectionOptions: {
@@ -27,13 +50,15 @@ console.log(rootDir)
             useFindAndModify: false
         }
     },
-    
+    mount: {
+        '/api': '${rootDir}/controllers/**/*.ts'
+    },
     componentsScan: [
-        `${rootDir}/services/**/*.ts`,
-        `${rootDir}/middlewares/**/*.ts`,
-        `${rootDir}/controllers/**/*.ts`,
-        `${rootDir}/interfaces/**/*.ts`,
-        `${rootDir}/models/**/*.ts`,
+        '${rootDir}/services/**/*.ts',
+        '${rootDir}/middlewares/**/*.ts',
+        '${rootDir}/controllers/**/*.ts',
+        '${rootDir}/interfaces/**/*.ts',
+        '${rootDir}/models/**/*.ts',
     ]
 })
 export class Server extends ServerLoader {
@@ -44,6 +69,7 @@ export class Server extends ServerLoader {
     public async $onMountingMiddlewares(): Promise<any | void> {
 
         this
+            .use(GlobalErrorHandlerMiddleware)
             .use(GlobalAcceptMimesMiddleware)
             .use(cookieParser())
             .use(compress({}))
@@ -52,6 +78,18 @@ export class Server extends ServerLoader {
             .use(bodyParser.urlencoded({
                 extended: true
             }))
+            .use(session({
+                secret: "mysecretkey",
+                resave: true,
+                saveUninitialized: true,
+                maxAge: 36000,
+                cookie: {
+                    path: "/",
+                    httpOnly: true,
+                    secure: false,
+                    maxAge: null
+                }
+            }));
 
         return null;
     }
