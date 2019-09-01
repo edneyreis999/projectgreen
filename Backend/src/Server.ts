@@ -9,8 +9,6 @@ const session = require("express-session");
 
 const rootDir = __dirname;
 
-console.log(rootDir)
-
 @ServerSettings({
     rootDir,
     //port: process.env.PORT,

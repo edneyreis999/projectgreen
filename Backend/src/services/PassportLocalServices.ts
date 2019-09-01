@@ -82,9 +82,6 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
             throw new BadRequest("Email is already registered");
         }
 
-        // Promise
-        console.log('----- user service -----')
-        console.log(user)
         // Create new User
         return await this.userModel.create(user);
     }
@@ -104,8 +101,6 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
 
     async login(email: string, password: string): Promise<User> {
         const user = await this.userModel.findOne({ email: email, password: password })
-        console.log('----- user ----')
-        console.log(user)
         if (user) {
             return user;
         }

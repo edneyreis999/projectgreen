@@ -7,11 +7,12 @@ import { ErrorHandlerSocketMiddleware } from "../middlewares/SocketMiddlewareErr
 import { Dumb } from '../models/Dumb'
 import { Inject } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
-import { AuthMiddleware } from "../middlewares/AuthenticationMiddleware";
+import { SocketAuthenticationMiddleware } from "../middlewares/SocketAuthenticationMiddleware";
 import { Authenticated } from "@tsed/common";
+import { User } from "../models/User";
 
 @SocketService('/')
-@SocketUseBefore(AuthMiddleware)
+@SocketUseBefore(SocketAuthenticationMiddleware)
 @SocketUseAfter(ErrorHandlerSocketMiddleware)
 export class GameSocket {
     private players: Map<string, Socket> = new Map<string, Socket>()
@@ -41,31 +42,29 @@ export class GameSocket {
 
     @Input(InputEvents.SEND_ATTACK)
     @Emit(OutputEvents.SEND_SUCCESS)
-    @Authenticated()
     sendAttack(
         @Args(0)
         message: any
     ): string {
 
-        return 'awadwdawdadsada';
+        return 'atacou';
     }
-    
-    @Authenticated()
+
     $onConnection(
         @Socket
         socket: SocketIO.Socket,
         @SocketSession
         session: SocketSession
     ): void {
-        const { token } = socket.handshake.query
-
-        const decoded = jwt.decode(token, Keys.JWT)
-
-        if (decoded && !decoded.server && decoded.character) {
+        
+        const { token } = socket.handshake.query;
+        const decoded = <User>jwt.verify(token, Keys.SOCKET)
+        
+        if (decoded) {
             session.set('player', decoded)
             session.set('authenticated', true)
-            this.players.set(decoded.character, socket)
-        } else if (decoded && !decoded.server) {
+            this.players.set(decoded._id, socket)
+        } else if (decoded) {
             session.set('authenticated', false)
             throw new Error('Invalid jwt')
         }

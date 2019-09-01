@@ -2,11 +2,12 @@
 
 import * as Express from "express";
 import * as Passport from "passport";
+import * as jwt from 'jsonwebtoken'
 import { BodyParams, Controller, Get, Post, Req, Required, Res, UseBefore, Authenticated } from "@tsed/common";
 import { User } from "../models/User";
 import { Docs } from "@tsed/swagger";
-import { Exception } from "ts-httpexceptions";
-import { AuthMiddleware } from "../middlewares/AuthenticationMiddleware";
+import { ILoginResponse } from "../interfaces/ILoginResponse";
+import { Keys } from "../interfaces/Keys";
 
 @Controller("/passport")
 @Docs('rest')
@@ -18,7 +19,7 @@ export class PassportCtrl {
         @Req() request: Express.Request,
         @Res() response: Express.Response) {
 
-        return new Promise<User>((resolve, reject) => {
+        return new Promise<ILoginResponse>((resolve, reject) => {
             Passport
                 .authenticate("login", (err, user: User) => {
                     if (err) {
@@ -26,13 +27,15 @@ export class PassportCtrl {
                     }
 
                     request.logIn(user, (err) => {
-                        console.log("------------")
-                        console.log(user)
                         if (err) {
                             console.log(err)
                             reject(err);
                         } else {
-                            resolve(user);
+                            const token = jwt.sign(JSON.stringify(user), Keys.SOCKET);
+                            resolve({
+                                user: user,
+                                tokenSocket: token
+                            });
                         }
                     });
 
