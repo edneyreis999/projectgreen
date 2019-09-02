@@ -8,7 +8,7 @@
     "tslint": "tslint --fix --project ./tsconfig.json ./src/*.ts ./src/**/*.ts",
     "tsc": "tsc -w --outDir ./dist --project tsconfig.json",
     "tsc:w": "tsc -w",
-    "start": "nodemon -r dotenv/config ./dist/index.js",
+    "start": "nodemon -r dotenv/config --inspect ./dist/index.js ",
     "start:staging": "nodemon -r dotenv/config ./dist/index.js dotenv_config_path=.staging.env",
     "start:production": "nodemon -r dotenv/config ./dist/index.js dotenv_config_path=.production.env"
   },

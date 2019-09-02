@@ -1,15 +1,6 @@
 import { Model, ObjectID, VirtualRef, Unique } from '@tsed/mongoose'
 import { Property, Required, Default, Enum } from '@tsed/common';
 
-export interface IStoreProgress {
-    level: number;
-    cost: number;
-    slot: number;
-    size: number;
-    costToSell: number;
-    secondsToLevelUp: number;
-}
-
 @Model({
     collection: 'static-data',
     schemaOptions: {
@@ -19,18 +10,35 @@ export interface IStoreProgress {
         }
     }
 })
-export class StaticStore {
+export class NicheConfig {
     @ObjectID()
     _id: string;
+
     @Property()
-    shortCode: string;
-    @Property()
-    name: string;
-    @Property()
-    description: string;
+    searchCode: string;
+    
     @Property()
     type: string;
+    
     @Property()
-    progress: IStoreProgress[];
+    passingScore: number;
+    
+    @Property()
+    globalPriceMultiplier: number;
+    
+    @Property()
+    globalQualityMultiplier: number;
+    
+    @Property()
+    globalDesignMultiplier: number;
+    
+    @Property()
+    minTimeToSell: number;
+    
+    @Property()
+    maxTimeToSell: number;
+    
+    @Property()
+    populationMultiplayer: number;
 }
 
