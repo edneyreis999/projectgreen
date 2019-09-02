@@ -1,11 +1,17 @@
 import { Model, ObjectID, VirtualRef, Unique } from '@tsed/mongoose'
 import { Property, Required, Default, Enum } from '@tsed/common';
-import { GameObject } from './GameObject';
-import { Document } from 'mongoose';
 
+export interface IStoreProgress {
+    level: number;
+    cost: number;
+    slot: number;
+    size: number;
+    costToSell: number;
+    secondsToLevelUp: number;
+}
 
 @Model({
-    collection: 'user',
+    collection: 'static-data',
     schemaOptions: {
         timestamps: {
             createdAt: 'createdOn',
@@ -13,28 +19,18 @@ import { Document } from 'mongoose';
         }
     }
 })
-export class User {
+export class StaticStore {
     @ObjectID()
-    _id?: string
-
+    _id: string;
     @Property()
-    name: string
-
+    shortCode: string;
     @Property()
-    @Required()
-    @Unique()
-    email: string
-
+    name: string;
     @Property()
-    @Required()
-    password: string
-
+    description: string;
     @Property()
-    @Required()
-    firstName: string
-
+    type: string;
     @Property()
-    @Required()
-    lastName: string
+    progress: IStoreProgress[];
 }
 

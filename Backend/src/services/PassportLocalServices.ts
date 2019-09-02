@@ -2,13 +2,13 @@ import * as Passport from "passport";
 import { Strategy } from "passport-local";
 import { Service, BeforeRoutesInit, AfterRoutesInit, ServerSettingsService, Inject, ExpressApplication, Use } from "@tsed/common";
 import { BadRequest, NotFound } from "ts-httpexceptions";
-import { User } from '../models/User'
+import { Account } from '../models/Account'
 import { MongooseModel } from "@tsed/mongoose";
 
 @Service()
 export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
-    @Inject(User)
-    private userModel: MongooseModel<User>
+    @Inject(Account)
+    private userModel: MongooseModel<Account>
 
     constructor(private serverSettings: ServerSettingsService,
         @Inject(ExpressApplication) private expressApplication: ExpressApplication) {
@@ -51,14 +51,13 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
                 passReqToCallback: true // allows us to pass back the entire request to the callback
             },
                 (req, email, password, done) => {
-                    const { firstName, lastName } = req.body;
+                    const { displayName } = req.body;
                     // asynchronous
-                    // User.findOne wont fire unless data is sent back
+                    // Account.findOne wont fire unless data is sent back
                     process.nextTick(() => {
-                        let user: User = new User();
+                        let user: Account = new Account();
                         user.email = email;
-                        user.firstName = firstName;
-                        user.lastName = lastName;
+                        user.displayName = displayName;
                         user.password = password;
 
                         this.signup(user)
@@ -74,15 +73,15 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
      * @param user
      * @returns {Promise<any>}
      */
-    async signup(user: User) {
+    async signup(user: Account) {
 
         const exists = await this.userModel.findOne({ email: user.email })
 
-        if (exists) { //User exists
+        if (exists) { //Account exists
             throw new BadRequest("Email is already registered");
         }
 
-        // Create new User
+        // Create new Account
         return await this.userModel.create(user);
     }
 
@@ -99,12 +98,12 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
         }));
     }
 
-    async login(email: string, password: string): Promise<User> {
+    async login(email: string, password: string): Promise<Account> {
         const user = await this.userModel.findOne({ email: email, password: password })
         if (user) {
             return user;
         }
 
-        throw new NotFound("User not found");
+        throw new NotFound("Account not found");
     }
 }

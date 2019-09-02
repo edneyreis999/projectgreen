@@ -1,7 +1,7 @@
-import { User } from "../models/User";
+import { Account } from "../models/Account";
 
     
 export interface ILoginResponse {
-    user: User;
+    user: Account;
     tokenSocket: string;
 }

@@ -9,7 +9,7 @@ import { Inject } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
 import { SocketAuthenticationMiddleware } from "../middlewares/SocketAuthenticationMiddleware";
 import { Authenticated } from "@tsed/common";
-import { User } from "../models/User";
+import { Account } from "../models/Account";
 
 @SocketService('/')
 @SocketUseBefore(SocketAuthenticationMiddleware)
@@ -58,7 +58,7 @@ export class GameSocket {
     ): void {
         
         const { token } = socket.handshake.query;
-        const decoded = <User>jwt.verify(token, Keys.SOCKET)
+        const decoded = <Account>jwt.verify(token, Keys.SOCKET)
         
         if (decoded) {
             session.set('player', decoded)

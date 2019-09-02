@@ -4,7 +4,7 @@ import * as Express from "express";
 import * as Passport from "passport";
 import * as jwt from 'jsonwebtoken'
 import { BodyParams, Controller, Get, Post, Req, Required, Res, UseBefore, Authenticated } from "@tsed/common";
-import { User } from "../models/User";
+import { Account } from "../models/Account";
 import { Docs } from "@tsed/swagger";
 import { ILoginResponse } from "../interfaces/ILoginResponse";
 import { Keys } from "../interfaces/Keys";
@@ -21,7 +21,7 @@ export class PassportCtrl {
 
         return new Promise<ILoginResponse>((resolve, reject) => {
             Passport
-                .authenticate("login", (err, user: User) => {
+                .authenticate("login", (err, user: Account) => {
                     if (err) {
                         reject(err);
                     }
@@ -49,14 +49,13 @@ export class PassportCtrl {
     @Post("/signup")
     async signup(@Required() @BodyParams("email") email: string,
         @Required() @BodyParams("password") password: string,
-        @Required() @BodyParams("firstName") firstName: string,
-        @Required() @BodyParams("lastName") lastName: string,
+        @Required() @BodyParams("displayName") displayName: string,
         @Req() request: Express.Request,
         @Res() response: Express.Response) {
 
         return new Promise((resolve, reject) => {
 
-            Passport.authenticate("signup", (err, user: User) => {
+            Passport.authenticate("signup", (err, user: Account) => {
 
                 if (err) {
                     return reject(err);
