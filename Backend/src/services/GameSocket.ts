@@ -46,7 +46,8 @@ export class GameSocket {
         @Args(0)
         message: any
     ): string {
-
+        console.log('---- message -----')
+        console.log(message)
         return 'atacou';
     }
 

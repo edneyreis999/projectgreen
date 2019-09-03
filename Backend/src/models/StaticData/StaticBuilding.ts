@@ -1,5 +1,5 @@
 import { Model, ObjectID, VirtualRef, Unique } from '@tsed/mongoose'
-import { Property, Required, Default, Enum } from '@tsed/common';
+import { Property, Required, Default, Enum, PropertyType } from '@tsed/common';
 
 export enum EBuildingType {
     STORE = 'Store',
@@ -7,7 +7,7 @@ export enum EBuildingType {
     FACTORY = 'Factory',
 }
 
-export interface IStoreProgress {
+export class IStoreProgress {
     level: number;
     cost: number;
     secondsToLevelUp: number;
@@ -16,14 +16,14 @@ export interface IStoreProgress {
     costToSell: number;
 }
 
-export interface IWarehouseProgress {
+export class IWarehouseProgress {
     level: number;
     cost: number;
     secondsToLevelUp: number;
     storageSpace: number;
 }
 
-export interface IFactoryProgress {
+export class IFactoryProgress {
     level: number;
     cost: number;
     secondsToLevelUp: number;
@@ -54,10 +54,13 @@ export class StaticBuilding {
     @Property()
     description: string;
     
-    @Property()
+    @Enum(EBuildingType)
     type: EBuildingType;
     
-    @Property()
-    progress: IStoreProgress[] | IFactoryProgress[] | IWarehouseProgress;
+    @PropertyType(IStoreProgress || IStoreProgress || IWarehouseProgress)
+    progress: IStoreProgress[] | IFactoryProgress[] | IWarehouseProgress[];
+
+    @PropertyType(String)
+    scopes: String[];
 }
 
