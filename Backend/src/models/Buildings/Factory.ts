@@ -17,10 +17,10 @@ export class Factory {
     @ObjectID()
     _id?: string
 
-    @Ref(TowerCenter)
+    @Ref('TowerCenter')
     towerCenter: Ref<TowerCenter>
 
-    @Ref(Tile)
+    @Ref('Tile')
     tile: Ref<Tile>
 
     @Property()

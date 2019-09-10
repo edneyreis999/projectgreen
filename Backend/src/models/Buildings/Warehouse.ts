@@ -17,7 +17,7 @@ export class Warehouse {
     @ObjectID()
     _id?: string
 
-    @Ref(TowerCenter)
+    @Ref('TowerCenter')
     towerCenter: Ref<TowerCenter>
 
     @Ref(Tile)

@@ -16,7 +16,7 @@ export class Niche {
     @ObjectID()
     _id?: string
 
-    @Ref(City)
+    @Ref('City')
     city: Ref<City>
 
     @Property()

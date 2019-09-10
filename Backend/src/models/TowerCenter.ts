@@ -1,5 +1,4 @@
-import { Model, ObjectID, VirtualRef, Unique, Ref } from '@tsed/mongoose'
-import { Property, Required, Default, Enum } from '@tsed/common';
+import { Model, ObjectID, Ref } from '@tsed/mongoose'
 import { Account } from './Account';
 import { Factory } from './Buildings/Factory';
 import { Store } from './Buildings/Store';
@@ -21,12 +20,12 @@ export class TowerCenter {
     @Ref(Account)
     account: Ref<Account>;
 
-    @Ref(Factory)
+    @Ref('Factory')
     factory: Ref<Factory>;
     
-    @Ref(Store)
+    @Ref('Store')
     store: Ref<Store>;
 
-    @Ref(Warehouse)
+    @Ref('Warehouse')
     warehouse: Ref<Warehouse>;
 }

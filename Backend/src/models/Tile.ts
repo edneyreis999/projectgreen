@@ -3,6 +3,8 @@ import { Property, Required, Default, Enum } from '@tsed/common';
 import { Account } from './Account';
 import { City } from './City';
 import { TowerCenter } from './TowerCenter';
+import { GameObject } from './GameObject';
+import { Document } from 'mongoose';
 
 @Model({
     collection: 'tile',
@@ -20,7 +22,7 @@ export class Tile {
     @Ref(TowerCenter)
     towerCenter?: Ref<TowerCenter>;
 
-    @Ref(City)
+    @Ref('City')
     city: Ref<City>;
     
     @Property()
