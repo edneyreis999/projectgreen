@@ -1,8 +1,6 @@
 import { Model, ObjectID, VirtualRef, Unique, Ref } from '@tsed/mongoose'
 import { Property, Required, Default, Enum } from '@tsed/common';
-import { Account } from './Account';
 import { Tile } from './Tile';
-import { GameObject } from './GameObject';
 import { Document } from 'mongoose';
 
 @Model({
@@ -27,7 +25,7 @@ export class City {
 
     @Property()
     @Default(1)
-    multiplayer: number
+    speed: number
 
     @VirtualRef({ justOne: false, foreignField: 'city', localField: '_id', type: 'Tile' })
     tiles: VirtualRef<Tile & Document>[]

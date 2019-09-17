@@ -1,5 +1,6 @@
 export enum InputEvents {
-    SEND_LOGIN = 'send.login',
-    SEND_MESSAGE = 'send.message',
-    SEND_ATTACK = 'send.attack'
+    SEND_SELECT_CITY = 'send.selectCity',
+    SEND_BUY_TILE = 'send.buyTile',
+    GET_PLAYER = 'send.getPlayer',
+    GET_HOME = 'send.getHome',
 }

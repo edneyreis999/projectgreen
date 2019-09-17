@@ -1,5 +1,7 @@
 import { Model, ObjectID, VirtualRef, Unique } from '@tsed/mongoose'
 import { Property, Required, Default, Enum } from '@tsed/common';
+import { Home } from './Home';
+import { Document } from 'mongoose';
 
 interface Metadata {
     banana: string;
@@ -34,8 +36,8 @@ export class Account {
     @Required()
     displayName: string
 
-    @Property()
-    userName?: string
+    @VirtualRef({ justOne: false, foreignField: 'account', localField: '_id', type: 'Home' })
+    homes: VirtualRef<Home & Document>[]
 
     @Property()
     lastLogin?: Date

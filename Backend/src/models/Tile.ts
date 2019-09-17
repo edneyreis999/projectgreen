@@ -1,10 +1,7 @@
 import { Model, ObjectID, VirtualRef, Unique, Ref } from '@tsed/mongoose'
 import { Property, Required, Default, Enum } from '@tsed/common';
-import { Account } from './Account';
 import { City } from './City';
-import { TowerCenter } from './TowerCenter';
-import { GameObject } from './GameObject';
-import { Document } from 'mongoose';
+import { Home } from './Home';
 
 @Model({
     collection: 'tile',
@@ -19,8 +16,8 @@ export class Tile {
     @ObjectID()
     _id?: string
 
-    @Ref(TowerCenter)
-    towerCenter?: Ref<TowerCenter>;
+    @Ref('Home')
+    home: Ref<Home>;
 
     @Ref('City')
     city: Ref<City>;

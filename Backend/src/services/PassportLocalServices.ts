@@ -8,7 +8,7 @@ import { MongooseModel } from "@tsed/mongoose";
 @Service()
 export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
     @Inject(Account)
-    private userModel: MongooseModel<Account>
+    private accountModel: MongooseModel<Account>
 
     constructor(private serverSettings: ServerSettingsService,
         @Inject(ExpressApplication) private expressApplication: ExpressApplication) {
@@ -23,7 +23,7 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
     }
 
     public async deserialize(id, done) {
-        const user = await this.userModel.findById(id)
+        const user = await this.accountModel.findById(id)
         done(null, user);
     }
 
@@ -75,14 +75,14 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
      */
     async signup(user: Account) {
 
-        const exists = await this.userModel.findOne({ email: user.email })
+        const exists = await this.accountModel.findOne({ email: user.email })
 
         if (exists) { //Account exists
             throw new BadRequest("Email is already registered");
         }
 
         // Create new Account
-        return await this.userModel.create(user);
+        return await this.accountModel.create(user);
     }
 
     public initializeLogin() {
@@ -99,7 +99,7 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
     }
 
     async login(email: string, password: string): Promise<Account> {
-        const user = await this.userModel.findOne({ email: email, password: password })
+        const user = await this.accountModel.findOne({ email: email, password: password })
         if (user) {
             return user;
         }

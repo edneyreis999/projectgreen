@@ -1,8 +1,7 @@
 import { Model, ObjectID, VirtualRef, Unique, Ref } from '@tsed/mongoose'
 import { Property, Required, Default, Enum } from '@tsed/common';
-import { TowerCenter } from '../TowerCenter';
-import { Tile } from '../Tile';
-import { EBuildingType } from '../StaticData/StaticBuilding';
+import { EBuildingType } from './StaticData/StaticBuilding';
+import { Home } from './Home';
 
 @Model({
     collection: 'building',
@@ -13,22 +12,19 @@ import { EBuildingType } from '../StaticData/StaticBuilding';
         }
     }
 })
-export class Factory {
+export class Building {
     @ObjectID()
-    _id?: string
+    _id?: string;
 
-    @Ref('TowerCenter')
-    towerCenter: Ref<TowerCenter>
-
-    @Ref('Tile')
-    tile: Ref<Tile>
+    @Ref('Home')
+    home: Ref<Home>;
 
     @Property()
     @Enum(EBuildingType)
     @Default(EBuildingType.FACTORY)
-    type: EBuildingType
+    type: EBuildingType;
 
     @Property()
     @Default(0)
-    level: number
+    level: number;
 }
