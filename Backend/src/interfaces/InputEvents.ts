@@ -3,4 +3,5 @@ export enum InputEvents {
     SEND_BUY_TILE = 'send.buyTile',
     GET_PLAYER = 'send.getPlayer',
     GET_HOME = 'send.getHome',
+    UPGRADE_BUILDING = 'send.updateBuilding',
 }

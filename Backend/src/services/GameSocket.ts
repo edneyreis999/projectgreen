@@ -8,7 +8,7 @@ import { SocketAuthenticationMiddleware } from "../middlewares/SocketAuthenticat
 import { Account } from "../models/Account";
 import { model, Document } from "mongoose";
 import { Home } from "../models/Home";
-import { EBuildingType } from "../models/StaticData/StaticBuilding";
+import { EBuildingType, StaticBuilding, IWarehouseProgress, IStoreProgress, IFactoryProgress } from "../models/StaticData/StaticBuilding";
 import { Building } from "../models/Building";
 import { Tile } from "../models/Tile";
 
@@ -64,6 +64,50 @@ export class GameSocket {
         }
         session.set('playerHome', home)
         return home;
+    }
+
+    @Input(InputEvents.UPGRADE_BUILDING)
+    @Emit(OutputEvents.SEND_SUCCESS)
+    async updateBuilding(
+        @SocketSession session: SocketSession,
+        @Args(0) buildingId: string
+    ): Promise<Building> {
+        const HomeModel = model('Home');
+        const StaticDataModel = model('StaticBuilding')
+        const playerHome = session.get('playerHome') as Home;
+
+        let home  = await HomeModel.findById(playerHome._id) as Home & Document;
+        if(!home){
+            throw new Error(`Home ${playerHome._id} Not Found!`)
+        }
+        home = await home.populate('buildings').execPopulate();
+        let building = home.buildings.find(home => {
+            return home.id === buildingId
+        })
+        if(!building){
+            throw new Error(`Building ${buildingId} Not Found!`)
+        }
+
+        const staticBuilding = await StaticDataModel.findOne({searchCode: building.type.toString()}).lean().exec() as StaticBuilding
+        if(!staticBuilding){
+            throw new Error(`search code '${building.type.toString()}' can't be found on static data`)
+        }
+        const currentBuildingProgress = staticBuilding.progress[building.level]
+        const nextBuildingProgress = staticBuilding.progress[building.level + 1]
+        if(!nextBuildingProgress){
+            throw new Error(`Building can't be updated!`)
+        }
+
+        home.spendGold(nextBuildingProgress.cost);
+
+        // ao invés de dar ++ no level... agendar um serviço de upgrade de acordo com o progress
+        building.level ++;
+
+        building.save();
+        home.save();
+
+
+        return building;
     }
 
     @Input(InputEvents.GET_HOME)
