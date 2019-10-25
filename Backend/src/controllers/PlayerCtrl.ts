@@ -15,8 +15,6 @@ export class PlayerCtrl {
         const CityModel = model('City');
         let citys = await CityModel.find() as City[] & Document[]
 
-        
-
         return citys
     }
 }

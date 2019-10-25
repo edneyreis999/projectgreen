@@ -1,10 +1,13 @@
 import React, { Children, FunctionComponent } from 'react'
 import AuthenticationProvider from './AuthenticationProvider'
+import GameProvider from './GameProvider'
 
-const Providers: FunctionComponent = ({children}) => {
+const Providers: FunctionComponent = ({ children }) => {
     return (
         <AuthenticationProvider>
-            {children}
+            <GameProvider>
+                {children}
+            </GameProvider>
         </AuthenticationProvider>
     )
 }

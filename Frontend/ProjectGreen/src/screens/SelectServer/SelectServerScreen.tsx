@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Block, Checkbox, Text, theme } from "galio-framework";
 import { useNavigation } from "react-navigation-hooks"
-import { IPlayerData } from '../../models/auth';
+import { AsyncStorage } from 'react-native'
 import { Endpoints } from '../../services/http/endpoints';
 
 import { Button, Icon, Input, Select } from "../../components";
@@ -20,31 +20,18 @@ import ModalDropdown from 'react-native-modal-dropdown';
 const { width, height } = Dimensions.get("screen");
 
 import styles from './styles'
-import AuthenticationContext from '../../contexts/AuthenticationContext';
-
-const singInBackgroundImage = require("../../assets/land/land_1.png");
+import GameContext from '../../contexts/GameContext';
+import { ICity } from '../../models/game';
 
 export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
   const { navigate } = useNavigation();
-  const { login: authenticate, isAuthenticated } = useContext(AuthenticationContext)
+  const { serverSelected } = useContext(GameContext)
 
-  const [{ data, loading, error }, useCitys] = useAxios<IPlayerData>({
+  const [{ data, loading, error }] = useAxios<ICity[]>({
     method: 'GET',
     url: Endpoints.Citys,
-  }, { manual: true })
+  })
 
-  useEffect(() => {
-    if (data) {
-      console.log('------ data --------')
-      console.log(data)
-    }
-  }, [data])
-  /*
-                <Select
-                defaultIndex={1}
-                options={["01", "02", "03", "04", "05"]}
-              />
-  */
   return (
     <Block flex middle>
       <StatusBar hidden />
@@ -54,13 +41,30 @@ export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
       >
         <Block flex middle>
           <Block style={styles.registerContainer}>
-            <Block flex={1} center>
-              <ModalDropdown accessible={loading} options={['option 1', 'option 2']}>
-              </ModalDropdown>
-            </Block>
-            <Block flex center>
-              <Text>Press To Start</Text>
-            </Block>
+            {
+              loading ? (
+                <Block flex middle center>
+                  <Text>Loading</Text>
+                </Block>
+              ) :
+                (
+                  <Block flex>
+                    <Block flex={0.2} center>
+                      <Block middle center>
+                        <ModalDropdown defaultValue={'first'} textStyle={{ fontSize: 20 }} dropdownTextStyle={{ fontSize: 20, color: argonTheme.COLORS.BLACK }} options={data.map((city: ICity) => `${city.displayName} (${city.speed}x)`)}>
+                        </ModalDropdown>
+                      </Block>
+                    </Block>
+                    <TouchableOpacity style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}
+                      onPress={() => {
+                        serverSelected('first')
+                      }}>
+                      <Text>Press To Start</Text>
+                    </TouchableOpacity>
+                  </Block>
+                )
+            }
+
           </Block>
         </Block>
       </ImageBackground>

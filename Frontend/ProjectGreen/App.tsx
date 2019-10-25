@@ -6,7 +6,7 @@ import Providers from './src/providers/Providers';
 import { NavigationService } from './src/services/NavigationService';
 
 export default function App() {
-  const AppNavigator = createNavigation(false);
+  const AppNavigator = createNavigation();
 
   return (
     <View style={styles.container}>
