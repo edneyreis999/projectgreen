@@ -12,7 +12,7 @@ import { Keys } from "../interfaces/Keys";
 @Controller("/passport")
 @Docs('rest')
 export class PassportCtrl {
-    
+
     @Post("/login")
     async login(@Required() @BodyParams("email") email: string,
         @Required() @BodyParams("password") password: string,
@@ -20,6 +20,9 @@ export class PassportCtrl {
         @Res() response: Express.Response) {
 
         return new Promise<ILoginResponse>((resolve, reject) => {
+            console.log(`aaaaaaaaaaaahhhhhhhhhhh chegou uns trem aqui /login`)
+            console.log(`email: ${email}`)
+            console.log(`password: ${password}`)
             Passport
                 .authenticate("login", (err, user: Account) => {
                     if (err) {
@@ -54,6 +57,11 @@ export class PassportCtrl {
         @Res() response: Express.Response) {
 
         return new Promise((resolve, reject) => {
+
+            console.log(`aaaaaaaaaaaahhhhhhhhhhh chegou uns trem aqui /signup`)
+            console.log(`email: ${email}`)
+            console.log(`password: ${password}`)
+            console.log(`displayName: ${displayName}`)
 
             Passport.authenticate("signup", (err, user: Account) => {
 
