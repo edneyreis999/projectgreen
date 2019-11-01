@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import useAxios from 'axios-hooks'
 import {
   StyleSheet,
@@ -25,12 +25,14 @@ import { ICity } from '../../models/game';
 
 export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
   const { navigate } = useNavigation();
-  const { serverSelected } = useContext(GameContext)
+  const { serverSelected, initGame } = useContext(GameContext)
 
   const [{ data, loading, error }] = useAxios<ICity[]>({
     method: 'GET',
     url: Endpoints.Citys,
   })
+
+  const [selectedServer, setSelectedServer] = useState<ICity>(null);
 
   return (
     <Block flex middle>
@@ -51,13 +53,24 @@ export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
                   <Block flex>
                     <Block flex={0.2} center>
                       <Block middle center>
-                        <ModalDropdown defaultValue={'first'} textStyle={{ fontSize: 20 }} dropdownTextStyle={{ fontSize: 20, color: argonTheme.COLORS.BLACK }} options={data.map((city: ICity) => `${city.displayName} (${city.speed}x)`)}>
+                        <ModalDropdown
+                          textStyle={{ fontSize: 20 }}
+                          dropdownTextStyle={{ fontSize: 20, color: argonTheme.COLORS.BLACK }}
+                          options={data.map((city: ICity) => `${city.displayName} (${city.speed}x)`)}
+                          onSelect={(index, value) => {
+                            let selectedCity = data[index];
+                            serverSelected(selectedCity)
+                            setSelectedServer(selectedCity)
+                          }}
+                        >
                         </ModalDropdown>
                       </Block>
                     </Block>
                     <TouchableOpacity style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}
-                      onPress={() => {
-                        serverSelected('first')
+                      onPress={async () => {
+                        if (selectedServer) {
+                          initGame();
+                        }
                       }}>
                       <Text>Press To Start</Text>
                     </TouchableOpacity>

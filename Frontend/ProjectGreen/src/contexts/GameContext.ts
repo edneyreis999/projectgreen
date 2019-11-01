@@ -1,10 +1,12 @@
 import React from 'react'
-import { IPlayerData } from '../models/auth'
+import { ICity } from '../models/game'
 
 const GameContext = React.createContext<{
-    serverSelected(playerData: string): Promise<void>
+    serverSelected(city: ICity): Promise<void>
+    initGame(): Promise<void>
 }>({
     serverSelected: async () => null,
+    initGame: async () => null,
 })
 
 export default GameContext

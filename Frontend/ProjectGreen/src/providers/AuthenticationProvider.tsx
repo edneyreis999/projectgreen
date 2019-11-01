@@ -18,7 +18,7 @@ const AuthenticationProvider: React.FunctionComponent<{
         await AsyncStorage.setItem('token', playerData.tokenSocket)
         await AsyncStorage.setItem('user', JSON.stringify(playerData.user))
         console.log('chamou NavigationService do login')
-        NavigationService.navigate("Main")
+        NavigationService.navigate("SelectServer")
     }
 
     const register = async (playerData: IPlayerData): Promise<void> => {
@@ -26,7 +26,7 @@ const AuthenticationProvider: React.FunctionComponent<{
         await AsyncStorage.setItem('token', playerData.tokenSocket)
         await AsyncStorage.setItem('user', JSON.stringify(playerData.user))
         console.log('chamou NavigationService do register')
-        NavigationService.navigate("Main")
+        NavigationService.navigate("SelectServer")
     }
 
     return (
