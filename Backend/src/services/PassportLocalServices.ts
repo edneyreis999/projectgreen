@@ -11,7 +11,8 @@ export class PassportLocalService implements BeforeRoutesInit, AfterRoutesInit {
     private accountModel: MongooseModel<Account>
 
     constructor(private serverSettings: ServerSettingsService,
-        @Inject(ExpressApplication) private expressApplication: ExpressApplication) {
+        @Inject(ExpressApplication) private expressApplication: ExpressApplication
+    ) {
         Passport.serializeUser(PassportLocalService.serialize);
 
         // used to deserialize the user

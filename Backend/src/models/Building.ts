@@ -14,7 +14,7 @@ import { Home } from './Home';
 })
 export class Building {
     @ObjectID()
-    _id?: string;
+    _id: string;
 
     @Ref('Home')
     home: Ref<Home>;

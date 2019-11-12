@@ -14,7 +14,7 @@ import { Document } from 'mongoose';
 })
 export class City {
     @ObjectID()
-    _id?: string
+    _id: string
 
     @Property()
     @Unique()
