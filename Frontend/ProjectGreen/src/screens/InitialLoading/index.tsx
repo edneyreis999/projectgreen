@@ -14,7 +14,7 @@ const AuthenticationLoading: React.FunctionComponent<{
         const checkIfIsAuthenticated = async () => {
             const authenticated = await isAuthenticated()
 
-            navigate(authenticated ? "Auth" : "Auth")
+            navigate(authenticated ? "Main" : "Main")
         }
 
         checkIfIsAuthenticated()

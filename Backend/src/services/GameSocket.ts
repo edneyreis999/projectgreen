@@ -12,7 +12,7 @@ import { EBuildingType, StaticBuilding, IWarehouseProgress, IStoreProgress, IFac
 import { Building } from "../models/Building";
 import { Tile } from "../models/Tile";
 
-@SocketService('/')
+@SocketService('/game')
 @SocketUseBefore(SocketAuthenticationMiddleware)
 @SocketUseAfter(ErrorHandlerSocketMiddleware)
 export class GameSocket {
@@ -40,11 +40,13 @@ export class GameSocket {
     }
 
     @Input(InputEvents.SEND_SELECT_CITY)
-    @Emit(OutputEvents.SEND_SUCCESS)
+    @Emit(OutputEvents.SEND_CITY_SELECTED_SUCCESSFULLY)
     async selectCity(
         @SocketSession session: SocketSession,
         @Args(0) cityId: string
     ): Promise<Home> {
+        console.log('-------- cityId ---------')
+        console.log(cityId)
         const CityModel = model('City');
         let city = await CityModel.findById(cityId);
         if(!city){

@@ -25,12 +25,19 @@ import { ICity } from '../../models/game';
 
 export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
   const { navigate } = useNavigation();
-  const { serverSelected, initGame } = useContext(GameContext)
+  const { initGame } = useContext(GameContext)
 
   const [{ data, loading, error }] = useAxios<ICity[]>({
     method: 'GET',
     url: Endpoints.Citys,
   })
+
+  useEffect(() => {
+    if(data){
+      console.log('---- data citys da API ----')
+      console.log(data)
+    }
+  }, [data])
 
   const [selectedServer, setSelectedServer] = useState<ICity>(null);
 
@@ -59,7 +66,6 @@ export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
                           options={data.map((city: ICity) => `${city.displayName} (${city.speed}x)`)}
                           onSelect={(index, value) => {
                             let selectedCity = data[index];
-                            serverSelected(selectedCity)
                             setSelectedServer(selectedCity)
                           }}
                         >
@@ -69,7 +75,7 @@ export const SelectServerScreen: React.FunctionComponent<{}> = ({ }) => {
                     <TouchableOpacity style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}
                       onPress={async () => {
                         if (selectedServer) {
-                          initGame();
+                          initGame(selectedServer);
                         }
                       }}>
                       <Text>Press To Start</Text>

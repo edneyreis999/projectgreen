@@ -5,7 +5,12 @@ import { useNavigation } from "react-navigation-hooks"
 
 
 export const HomeScreen: React.FunctionComponent<{}> = ({ }) => {
-  const { navigate } = useNavigation()
+  const { navigate } = useNavigation();
+  const buildings = [
+    {
+      
+    }
+  ]
   return (
     <ScrollView contentContainerStyle={{
       flexGrow: 2,
