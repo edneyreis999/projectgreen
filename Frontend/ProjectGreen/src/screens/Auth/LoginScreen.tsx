@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import useAxios from 'axios-hooks'
 import {
   StyleSheet,
@@ -31,6 +31,11 @@ export const LoginScreen: React.FunctionComponent<{}> = ({ }) => {
     method: 'POST',
     url: Endpoints.SignIn,
   }, { manual: true })
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
 
 
   useEffect(() => {
@@ -84,6 +89,7 @@ export const LoginScreen: React.FunctionComponent<{}> = ({ }) => {
                     <Input
                       borderless
                       placeholder="Email"
+                      onChangeText={(value: string) => setEmail(value)}
                       iconContent={
                         <Icon
                           size={16}
@@ -100,6 +106,7 @@ export const LoginScreen: React.FunctionComponent<{}> = ({ }) => {
                       password
                       borderless
                       placeholder="Password"
+                      onChangeText={(value: string) => setPassword(value)}
                       iconContent={
                         <Icon
                           size={16}
@@ -115,8 +122,8 @@ export const LoginScreen: React.FunctionComponent<{}> = ({ }) => {
                     <Button color="primary" style={styles.createButton} onPress={() => {
                       login({
                         data: {
-                          "email": "edney_reis999@hotmail.com",
-                          "password": "123456",
+                          "email": email,
+                          "password": password,
                         }
                       })
                     }}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import useAxios from 'axios-hooks'
 import {
   StyleSheet,
@@ -30,6 +30,10 @@ export const RegisterScreen: React.FunctionComponent<{}> = ({ }) => {
     method: 'POST',
     url: Endpoints.SignUp,
   }, { manual: true })
+
+  const [nick, setNick] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
 
   useEffect(() => {
@@ -103,6 +107,7 @@ export const RegisterScreen: React.FunctionComponent<{}> = ({ }) => {
                     <Input
                       borderless
                       placeholder="Nick"
+                      onChangeText={(value: string) => setNick(value)}
                       iconContent={
                         <Icon
                           size={16}
@@ -118,6 +123,7 @@ export const RegisterScreen: React.FunctionComponent<{}> = ({ }) => {
                     <Input
                       borderless
                       placeholder="Email"
+                      onChangeText={(value: string) => setEmail(value)}
                       iconContent={
                         <Icon
                           size={16}
@@ -134,6 +140,7 @@ export const RegisterScreen: React.FunctionComponent<{}> = ({ }) => {
                       password
                       borderless
                       placeholder="Password"
+                      onChangeText={(value: string) => setPassword(value)}
                       iconContent={
                         <Icon
                           size={16}
@@ -177,9 +184,9 @@ export const RegisterScreen: React.FunctionComponent<{}> = ({ }) => {
                     <Button color="primary" loading={loading} style={styles.createButton} onPress={() => {
                       register({
                         data: {
-                          "email": "string",
-                          "password": "string",
-                          "displayName": "string"
+                          "email": email,
+                          "password": 123456,
+                          "displayName": nick
                         }
                       })
                     }}>
