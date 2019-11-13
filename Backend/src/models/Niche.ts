@@ -1,6 +1,5 @@
 import { Model, ObjectID, VirtualRef, Unique, Ref } from '@tsed/mongoose'
 import { Property, Required, Default, Enum, Format } from '@tsed/common';
-import { Account } from './Account';
 import { City } from './City';
 
 @Model({
@@ -14,7 +13,7 @@ import { City } from './City';
 })
 export class Niche {
     @ObjectID()
-    _id?: string
+    _id: string
 
     @Ref('City')
     city: Ref<City>

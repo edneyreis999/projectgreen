@@ -11,8 +11,9 @@ import { Home } from "../models/Home";
 import { EBuildingType, StaticBuilding, IWarehouseProgress, IStoreProgress, IFactoryProgress } from "../models/StaticData/StaticBuilding";
 import { Building } from "../models/Building";
 import { Tile } from "../models/Tile";
+import { agenda } from "./AgendaService";
 
-@SocketService('/')
+@SocketService('/game')
 @SocketUseBefore(SocketAuthenticationMiddleware)
 @SocketUseAfter(ErrorHandlerSocketMiddleware)
 export class GameSocket {
@@ -40,11 +41,17 @@ export class GameSocket {
     }
 
     @Input(InputEvents.SEND_SELECT_CITY)
-    @Emit(OutputEvents.SEND_SUCCESS)
+    @Emit(OutputEvents.SEND_CITY_SELECTED_SUCCESSFULLY)
     async selectCity(
         @SocketSession session: SocketSession,
         @Args(0) cityId: string
     ): Promise<Home> {
+        console.log('-------- cityId ---------')
+        console.log(cityId)
+        // exemplo de uso da agenda?
+        // await agenda.schedule(new Date(), "NOME DO EVENTO", {
+        // DADOS: DADOS // pode inserir qlqer porra aqui, ele vai ficar dentro de job.attrs.data.SUASCOISAS na hora de processar na agenda   
+        //})
         const CityModel = model('City');
         let city = await CityModel.findById(cityId);
         if(!city){
@@ -62,8 +69,9 @@ export class GameSocket {
             home.gold = 100000;
             home = await home.save();
         }
-        session.set('playerHome', home)
-        return home;
+        const homeObject = home.toObject()
+        session.set('playerHome', homeObject)
+        return homeObject;
     }
 
     @Input(InputEvents.UPGRADE_BUILDING)
@@ -106,8 +114,7 @@ export class GameSocket {
         building.save();
         home.save();
 
-
-        return building;
+        return building.toObject();
     }
 
     @Input(InputEvents.GET_HOME)
@@ -122,7 +129,7 @@ export class GameSocket {
         }
         home = await home.populate('buildings').execPopulate();
         
-        return home;
+        return home.toObject();
     }
 
     @Input(InputEvents.SEND_BUY_TILE)
@@ -183,7 +190,7 @@ export class GameSocket {
             
             await tile.save();
             await home.save();
-            return home;
+            return home.toObject();
         } catch (e) {
             throw new Error(e);
         }

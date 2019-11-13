@@ -13,8 +13,11 @@ export class PlayerCtrl {
     @Get('/citys')
     async getCitys(@Req() request: Express.Request): Promise<City[]> {
         const CityModel = model('City');
-        let citys = await CityModel.find() as City[] & Document[]
+        let citys = await CityModel.find().lean() as (City & Document)[]
 
+
+        console.log('----- citys ------')
+        console.log(citys)
         return citys
     }
 }

@@ -18,7 +18,7 @@ interface Metadata {
 })
 export class Account {
     @ObjectID()
-    _id?: string
+    _id: string
 
     @Property()
     name: string
