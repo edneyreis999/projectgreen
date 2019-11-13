@@ -45,7 +45,8 @@ const rootDir = __dirname;
         connectionOptions: {
             useNewUrlParser: true,
             useCreateIndex: true,
-            useFindAndModify: false
+            useFindAndModify: false,
+            useUnifiedTopology: true
         }
     },
     mount: {
@@ -64,7 +65,7 @@ export class Server extends ServerLoader {
      * This method let you configure the express middleware required by your application to works.
      * @returns {Server}
      */
-    public async $onMountingMiddlewares(): Promise<any | void> {
+    public async $beforeRoutesInit(): Promise<any | void> {
 
         this
             .use(GlobalErrorHandlerMiddleware)

@@ -8,20 +8,22 @@
     "tslint": "tslint --fix --project ./tsconfig.json ./src/*.ts ./src/**/*.ts",
     "tsc": "tsc -w --outDir ./dist --project tsconfig.json",
     "tsc:w": "tsc -w",
-    "start": "nodemon -r dotenv/config --inspect ./dist/index.js ",
+    "start": "nodemon -r dotenv/config ./dist/index.js ",
     "start:staging": "nodemon -r dotenv/config ./dist/index.js dotenv_config_path=.staging.env",
     "start:production": "nodemon -r dotenv/config ./dist/index.js dotenv_config_path=.production.env"
   },
   "author": "Edney Antonio Reis Filho",
   "license": "ISC",
   "dependencies": {
-    "@tsed/common": "^5.25.1",
-    "@tsed/core": "^5.25.1",
-    "@tsed/di": "^5.25.1",
-    "@tsed/mongoose": "5.22.0",
-    "@tsed/socketio": "^5.21.0",
-    "@tsed/swagger": "^5.27.5",
+    "@tsed/common": "^5.33.5",
+    "@tsed/core": "^5.33.5",
+    "@tsed/di": "^5.33.5",
+    "@tsed/mongoose": "^5.33.5",
+    "@tsed/socketio": "^5.33.5",
+    "@tsed/swagger": "^5.33.5",
     "@types/jsonwebtoken": "^8.3.3",
+    "agenda": "^2.1.0",
+    "agendash": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -41,18 +43,18 @@
     "ts-json-properties": "2.0.3"
   },
   "devDependencies": {
+    "@types/agenda": "^2.0.6",
     "@types/express": "^4.17.0",
     "@types/mongoose": "^5.5.9",
     "@types/node": "^11.11.5",
     "@types/passport": "^1.0.0",
     "@types/passport-local": "^1.0.33",
     "@types/request-promise": "^4.1.41",
-    "@types/socket.io": "^2.1.2",
+    "@types/socket.io": "^1.4.33",
     "@types/swagger-schema-official": "^2.0.18",
-    "dotenv": "^8.0.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^1.19.1",
     "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.7.2"
   }
 }

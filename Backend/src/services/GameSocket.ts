@@ -13,7 +13,7 @@ import { Building } from "../models/Building";
 import { Tile } from "../models/Tile";
 import { agenda } from "./AgendaService";
 
-@SocketService('/game')
+@SocketService('/')
 @SocketUseBefore(SocketAuthenticationMiddleware)
 @SocketUseAfter(ErrorHandlerSocketMiddleware)
 export class GameSocket {
@@ -54,15 +54,15 @@ export class GameSocket {
         //})
         const CityModel = model('City');
         let city = await CityModel.findById(cityId);
-        if(!city){
+        if (!city) {
             throw new Error(`City ${cityId} does not exists!!`);
         }
-        
+
         const HomeModel = model('Home');
-        let home = await HomeModel.findOne({city: cityId}) as Home & Document;
+        let home = await HomeModel.findOne({ city: cityId }) as Home & Document;
         const sessionPlayer = session.get('player') as Account;
 
-        if(!home){
+        if (!home) {
             home = new HomeModel() as Home & Document;
             home.city = cityId;
             home.account = sessionPlayer._id;
@@ -84,32 +84,32 @@ export class GameSocket {
         const StaticDataModel = model('StaticBuilding')
         const playerHome = session.get('playerHome') as Home;
 
-        let home  = await HomeModel.findById(playerHome._id) as Home & Document;
-        if(!home){
+        let home = await HomeModel.findById(playerHome._id) as Home & Document;
+        if (!home) {
             throw new Error(`Home ${playerHome._id} Not Found!`)
         }
         home = await home.populate('buildings').execPopulate();
         let building = home.buildings.find(home => {
             return home.id === buildingId
         })
-        if(!building){
+        if (!building) {
             throw new Error(`Building ${buildingId} Not Found!`)
         }
 
-        const staticBuilding = await StaticDataModel.findOne({searchCode: building.type.toString()}).lean().exec() as StaticBuilding
-        if(!staticBuilding){
+        const staticBuilding = await StaticDataModel.findOne({ searchCode: building.type.toString() }).lean().exec() as StaticBuilding
+        if (!staticBuilding) {
             throw new Error(`search code '${building.type.toString()}' can't be found on static data`)
         }
         const currentBuildingProgress = staticBuilding.progress[building.level]
         const nextBuildingProgress = staticBuilding.progress[building.level + 1]
-        if(!nextBuildingProgress){
+        if (!nextBuildingProgress) {
             throw new Error(`Building can't be updated!`)
         }
 
         home.spendGold(nextBuildingProgress.cost);
 
         // ao invés de dar ++ no level... agendar um serviço de upgrade de acordo com o progress
-        building.level ++;
+        building.level++;
 
         building.save();
         home.save();
@@ -123,12 +123,13 @@ export class GameSocket {
         @Args(0) homeId: string
     ): Promise<Home> {
         const HomeModel = model('Home');
-        let home = await HomeModel.findById(homeId) as Home & Document;
-        if(!home){
-            throw new Error(`Home ${homeId} Not Found!`)
-        }
-        home = await home.populate('buildings').execPopulate();
-        
+        let home = await HomeModel.findById(homeId)
+        console.log('---- home antes -----')
+        console.log(home)
+        await home.populate('buildings').execPopulate() as Home & Document
+
+        console.log('----home depois-----')
+        console.log(home)
         return home.toObject();
     }
 
@@ -146,7 +147,7 @@ export class GameSocket {
         const sessionPlayer = session.get('player') as Account;
         const playerHome = session.get('playerHome') as Home;
 
-        if(!playerHome){
+        if (!playerHome) {
             throw new Error('Need to call \'send.selectCity\' before')
         }
 
@@ -161,7 +162,7 @@ export class GameSocket {
             if (!tile) {
                 throw new Error(`TileId ${tileId} Not Found`)
             }
-            if(tile.home){
+            if (tile.home) {
                 throw new Error(`Tile already belongs to a player!`)
             }
 
@@ -171,23 +172,23 @@ export class GameSocket {
             factory.home = home.id;
             factory.type = EBuildingType.FACTORY;
             factory.level = 1;
-            
+
             let store = new BuildingModel() as Building & Document;
             store.home = home;
             store.type = EBuildingType.STORE;
             store.level = 1;
-            
+
             let warehouse = new BuildingModel() as Building & Document;
             warehouse.home = home;
             warehouse.type = EBuildingType.WAREHOUSE;
             warehouse.level = 1;
-            
+
             await factory.save();
             await store.save();
             await warehouse.save();
 
             tile.home = home.id;
-            
+
             await tile.save();
             await home.save();
             return home.toObject();

@@ -5,6 +5,7 @@ import { Controller, Get, Req, Inject, Post, Required, BodyParams, PathParams } 
 import { Docs } from "@tsed/swagger";
 import { City } from "../models/City";
 import { model, Document } from "mongoose";
+import { Building } from "../models/Building";
 
 @Controller("/player")
 @Docs('rest')
@@ -19,5 +20,14 @@ export class PlayerCtrl {
         console.log('----- citys ------')
         console.log(citys)
         return citys
+    }
+    @Get('/building/:buildingId')
+    async getBuilding(@Required() @PathParams("buildingId") buildingId: string): Promise<Building> {
+        const BuildingModel = model('Building');
+        let building = await BuildingModel.findById(buildingId) as (Building & Document)
+        await building.populate('home').execPopulate();
+        console.log('----- building ------')
+        console.log(building)
+        return building
     }
 }

@@ -16,7 +16,7 @@ import { Property } from '@tsed/common';
 })
 export class Home {
     @ObjectID()
-    _id?: string
+    _id: string
 
     @Ref('Account')
     account: Ref<Account>;
